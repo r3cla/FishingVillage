@@ -1,0 +1,7 @@
+[versions]
+gdx = "1.12.1"
+
+[libraries]
+gdx-core             = { module = "com.badlogicgames.gdx:gdx",                  version.ref = "gdx" }
+gdx-backend-lwjgl3   = { module = "com.badlogicgames.gdx:gdx-backend-lwjgl3",   version.ref = "gdx" }
+gdx-freetype         = { module = "com.badlogicgames.gdx:gdx-freetype",         version.ref = "gdx" }

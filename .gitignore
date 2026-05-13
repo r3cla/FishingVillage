@@ -1,0 +1,18 @@
+# Gradle
+.gradle/
+build/
+.kotlin/
+
+# Compiled class output (VS Code / Eclipse Java extension)
+bin/
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code local files
+.claude/settings.local.json
+settings.local.json
+
+# Player save (don't commit personal game progress)
+desktop/assets/save.json
