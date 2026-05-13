@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'com.gradleup.shadow' version '9.0.0'
 }
 
 repositories {
@@ -25,4 +26,11 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+shadowJar {
+    archiveBaseName = 'FishingVillage'
+    archiveVersion = project.version
+    archiveClassifier = ''
+    mergeServiceFiles()
 }
