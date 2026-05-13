@@ -1,4 +1,4 @@
-# FishingVillage — Project Notes for AI
+
 
 ## Stack
 - Java 21, LibGDX 1.12.1, LWJGL3 backend
