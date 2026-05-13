@@ -34,3 +34,18 @@ shadowJar {
     archiveClassifier = ''
     mergeServiceFiles()
 }
+
+tasks.register('releaseZip', Zip) {
+    dependsOn shadowJar
+    archiveBaseName = 'FishingVillage'
+    archiveVersion = project.version
+    archiveClassifier = ''
+    destinationDirectory = layout.buildDirectory.dir('release')
+
+    into("FishingVillage-${project.version}") {
+        from shadowJar
+        from('assets') {
+            exclude 'save.json'
+        }
+    }
+}
