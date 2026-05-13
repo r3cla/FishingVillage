@@ -47,4 +47,5 @@ Test:
  - Background Images: https://craftpix.net/freebies/ocean-and-clouds-free-pixel-art-backgrounds/
  - Background Music: https://pixabay.com/users/danielhren-16113816/
  - Fish, Character, Rod + Other Pixel Art Assets: Mako
+ - Fish Knowledges: https://www.fishbase.se/
 
