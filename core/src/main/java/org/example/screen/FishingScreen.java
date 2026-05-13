@@ -42,7 +42,6 @@ public class FishingScreen extends ScreenAdapter {
 
     private enum FishingState { IDLE, CASTING, WAITING, BITING, MINIGAME, REELING, SHOW_RESULT }
 
-    // ── Screen ───────────────────────────────────────────────────────────────
     private static final float W       = 1280f;
     private static final float H       = 720f;
     private static final float hz = 320f;

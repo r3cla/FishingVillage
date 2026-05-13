@@ -32,7 +32,7 @@ public class SaveData {
 
     public static class FishEntry {
         public String  fishId;
-        public String  junkId; // JunkType.name() if junk, null if fish
+        public String  junkId; // null for fish
         public double  weight;
         public boolean shiny;
         public int     value;

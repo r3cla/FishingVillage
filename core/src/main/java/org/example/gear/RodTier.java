@@ -8,8 +8,7 @@ public enum RodTier {
 
     public final String  displayName;
     public final int     cost;
-    /** Absolute catch probabilities: [COMMON, UNCOMMON, RARE, EPIC, LEGENDARY]. Sum + junkProb = 1.0 */
-    public final float[] rarityProbs;
+    public final float[] rarityProbs; // [COMMON..LEGENDARY]; sum + junkProb = 1.0
     public final float   junkProb;
 
     RodTier(String displayName, int cost, float[] rarityProbs, float junkProb) {

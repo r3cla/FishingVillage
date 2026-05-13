@@ -94,8 +94,6 @@ public class ShopScreen extends ScreenAdapter {
         drawContent();
     }
 
-    // ── Input ─────────────────────────────────────────────────────────────────
-
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             game.setScreen(game.fishingScreen);
@@ -157,7 +155,6 @@ public class ShopScreen extends ScreenAdapter {
             }
         }
 
-        // E = equip highlighted bait
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             BaitType target = switch (gearCursor) {
                 case 2 -> BaitType.STANDARD;
@@ -170,8 +167,6 @@ public class ShopScreen extends ScreenAdapter {
             }
         }
     }
-
-    // ── Drawing ───────────────────────────────────────────────────────────────
 
     private void drawPanel() {
         shapes.begin(ShapeRenderer.ShapeType.Filled);
@@ -187,19 +182,16 @@ public class ShopScreen extends ScreenAdapter {
     }
 
     private void drawContent() {
-        // Selection highlight (before text)
         drawSelectionHighlight();
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        // Title
         font.getData().setScale(2.4f);
         font.setColor(COIN_GOLD);
         font.draw(batch, "Village Shop", CX, PY + PH - 18f);
         font.getData().setScale(1f);
 
-        // Coins
         font.setColor(0.72f, 0.72f, 0.72f, 1f);
         font.draw(batch, "Coins:", CX, PY + PH - 60f);
         font.getData().setScale(1.5f);
@@ -207,7 +199,6 @@ public class ShopScreen extends ScreenAdapter {
         font.draw(batch, String.valueOf(game.gameState.getCoins()), CX + 64f, PY + PH - 57f);
         font.getData().setScale(1f);
 
-        // Tab bar
         float tabY = PY + PH - 86f;
         font.getData().setScale(1.2f);
         font.setColor(currentTab == Tab.SELL ? COIN_GOLD : CANT_BUY);
@@ -242,15 +233,12 @@ public class ShopScreen extends ScreenAdapter {
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
-    // ── Sell tab ──────────────────────────────────────────────────────────────
-
     private void drawSellContent() {
         FishBag bag = game.gameState.getFishBag();
         List<CaughtFish> slots = bag.getSlots();
         int maxSlots    = bag.getMaxSlots();
         int visibleEnd  = Math.min(sellScrollOffset + SELL_VISIBLE, maxSlots);
 
-        // scroll-up indicator
         if (sellScrollOffset > 0) {
             font.setColor(0.55f, 0.55f, 0.60f, 1f);
             font.draw(batch, "^  more above", CX + 260f, SELL_ROW_Y0 + 16f);
@@ -288,7 +276,6 @@ public class ShopScreen extends ScreenAdapter {
             }
         }
 
-        // scroll-down indicator
         if (visibleEnd < maxSlots) {
             float indicatorY = SELL_ROW_Y0 + (visibleEnd - sellScrollOffset) * SELL_ROW_STEP - 4f;
             font.setColor(0.55f, 0.55f, 0.60f, 1f);
@@ -315,8 +302,6 @@ public class ShopScreen extends ScreenAdapter {
         }
         font.getData().setScale(1f);
     }
-
-    // ── Gear tab ──────────────────────────────────────────────────────────────
 
     private void drawGearContent() {
         RodTier rod = game.gameState.getRod();
@@ -345,7 +330,6 @@ public class ShopScreen extends ScreenAdapter {
 
         drawGearBagRow(gearRowY(5), gearCursor == 5);
 
-        // Controls
         font.setColor(0.28f, 0.25f, 0.10f, 1f);
         font.draw(batch, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", CX, PY + 100f);
         font.setColor(0.50f, 0.50f, 0.55f, 1f);
@@ -399,12 +383,12 @@ public class ShopScreen extends ScreenAdapter {
 
     private float gearRowY(int index) {
         return switch (index) {
-            case 0 -> PY + PH - 148f;  // 472 - Advanced Rod
-            case 1 -> PY + PH - 180f;  // 440 - Master Rod
-            case 2 -> PY + PH - 240f;  // 380 - Std Bait
-            case 3 -> PY + PH - 274f;  // 346 - Prem Bait
-            case 4 -> PY + PH - 308f;  // 312 - Exotic Bait
-            case 5 -> PY + PH - 368f;  // 252 - Bag Upgrade
+            case 0 -> PY + PH - 148f;
+            case 1 -> PY + PH - 180f;
+            case 2 -> PY + PH - 240f;
+            case 3 -> PY + PH - 274f;
+            case 4 -> PY + PH - 308f;
+            case 5 -> PY + PH - 368f;
             default -> PY + PH - 148f;
         };
     }

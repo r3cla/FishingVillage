@@ -10,10 +10,8 @@ public enum BaitType {
     public final String  displayName;
     public final int     costEach;
     public final int     buyQty;
-    /** Added to rod's junkProb (negative = less junk). */
-    public final float   junkDelta;
-    /** Added to rod's rarityProbs per rarity index [COMMON, UNCOMMON, RARE, EPIC, LEGENDARY]. */
-    public final float[] rarityBoosts;
+    public final float   junkDelta;    // added to rod junkProb; negative = less junk
+    public final float[] rarityBoosts; // added to rod rarityProbs [COMMON..LEGENDARY]
 
     BaitType(String displayName, int costEach, int buyQty, float junkDelta, float[] rarityBoosts) {
         this.displayName  = displayName;

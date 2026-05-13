@@ -7,7 +7,7 @@ public enum Rarity {
     EPIC      (0.06,  3.0, "Epic"),
     LEGENDARY (0.02,  2.5, "Legendary");
 
-    public final double catchWeight;   // relative weight used in weighted RNG
+    public final double catchWeight;
     public final double valueMultiplier;
     public final String displayName;
 

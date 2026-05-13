@@ -46,21 +46,18 @@ public class FishRegistry {
         new Fish("leviathan_eel",      "Leviathan Eel",      Rarity.LEGENDARY, 50.0, 300.0, 2000, "A creature of impossible scale, glimpsed only in the deepest water. No record exists of anyone landing one and returning with dry hands.")
     );
 
-    // Junk weight relative to the sum of all rarity catchWeights (1.0),
-    // giving roughly a 30% chance of pulling up junk on any cast.
+    // ~30% junk chance relative to sum of all rarity catchWeights
     private static final double JUNK_WEIGHT = 0.43;
 
-    // Fish that prefer daytime
     private static final Set<String> DAY_FISH = Set.of(
         "sardine", "herring", "perch", "bream", "tuna", "manta_ray"
     );
 
-    // Fish that prefer night (NIGHT only)
     private static final Set<String> NIGHT_FISH = Set.of(
         "catfish", "pike", "eel", "sturgeon", "oarfish", "ancient_coelacanth"
     );
 
-    // Exclusively a night fish — negligible weight during the day
+    // negligible weight during day
     private static final Set<String> NIGHT_ONLY = Set.of(
         "leviathan_eel"
     );
@@ -97,7 +94,6 @@ public class FishRegistry {
         return rollCatch(rng, time, null);
     }
 
-    /** Gear-aware roll: absolute probability tables from rod + additive deltas from bait. */
     public static CatchResult rollCatch(Random rng, TimeOfDay time, Weather weather, RodTier rod, BaitType bait) {
         Rarity[] rarities = Rarity.values();
         float[] probs = new float[rarities.length];
@@ -107,14 +103,14 @@ public class FishRegistry {
 
         float junkProb = Math.max(0f, rod.junkProb + bait.junkDelta);
 
-        // Storm boosts rare+ by 1.5x; recalculate common as filler afterward
+        // storm: boost rare+ 1.5x, common fills remainder
         if (weather == Weather.STORM) {
             for (int i = 1; i < rarities.length; i++) {
                 probs[i] = Math.min(probs[i] * 1.5f, 1f);
             }
         }
 
-        // Common absorbs whatever probability remains after junk + uncommon..legendary
+        // common absorbs remaining probability
         float nonCommon = junkProb;
         for (int i = 1; i < probs.length; i++) nonCommon += probs[i];
         probs[0] = Math.max(0f, 1.0f - nonCommon);
@@ -124,7 +120,7 @@ public class FishRegistry {
             return new CatchResult.JunkCatch(randomJunk(rng));
         }
 
-        // Roll within fish probability space (junk already consumed)
+        // roll within fish space (junk already consumed)
         double fishRoll = roll - junkProb;
         double cumulative = 0;
         Rarity rarity = rarities[0];
@@ -136,7 +132,6 @@ public class FishRegistry {
         return new CatchResult.FishCatch(rollFishInRarity(rng, rarity, time, weather));
     }
 
-    /** Weighted random catch without gear modifiers. */
     public static CatchResult rollCatch(Random rng, TimeOfDay time, Weather weather) {
         double fishTotal = 0;
         for (Rarity r : Rarity.values()) fishTotal += r.catchWeight;

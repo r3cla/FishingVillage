@@ -5,11 +5,10 @@ import java.util.Random;
 
 public class WeatherSystem {
 
-    // Transition probabilities: for each current weather, the chance of moving to each next weather
     private static final EnumMap<Weather, double[]> TRANSITIONS = new EnumMap<>(Weather.class);
 
     static {
-        //                                      CLEAR  OVERCAST  RAIN  STORM   FOG
+        //             CLEAR  OVERCAST  RAIN  STORM  FOG
         TRANSITIONS.put(Weather.CLEAR,    new double[]{ 0.65,  0.20,  0.05,  0.00,  0.10 });
         TRANSITIONS.put(Weather.OVERCAST, new double[]{ 0.25,  0.35,  0.30,  0.05,  0.05 });
         TRANSITIONS.put(Weather.RAIN,     new double[]{ 0.10,  0.30,  0.35,  0.20,  0.05 });

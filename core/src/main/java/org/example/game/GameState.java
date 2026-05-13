@@ -28,21 +28,17 @@ public class GameState {
 
     private static final int[] BAG_UPGRADE_COSTS = {500, 1000, 2000, 4000};
 
-    /** Console game: credits coins immediately on catch. */
     public void addCatch(int value) {
         coins += value;
         totalCatches++;
     }
 
-    /** GUI flow: fish enters bag; coins come later when sold. */
+    // coins credited on sell, not on catch
     public void recordCatch() { totalCatches++; }
 
-    /** Called when fish is sold at the shop. */
     public void addCoins(int amount) { coins += amount; }
 
     public void addMiss() { totalMisses++; }
-
-    // ── Gear ──────────────────────────────────────────────────────────────────
 
     public boolean buyRod(RodTier rod) {
         if (coins < rod.cost) return false;
@@ -74,7 +70,7 @@ public class GameState {
         equippedBait = bait;
     }
 
-    /** Consumes one unit of equipped bait. Auto-clears equipped if stock hits 0. */
+    // auto-clears equipped bait when stock hits 0
     public void consumeBait() {
         if (equippedBait == BaitType.NONE) return;
         int count = baitStock.getOrDefault(equippedBait, 0);
@@ -86,9 +82,6 @@ public class GameState {
         }
     }
 
-    // ── Journal / Encyclopedia ────────────────────────────────────────────────
-
-    /** Records a fish catch into the per-species log. Called from FishingScreen. */
     public void recordFishCatch(String fishId, double weight, boolean shiny) {
         fishRecords.computeIfAbsent(fishId, k -> new FishRecord()).record(weight, shiny);
     }
@@ -109,8 +102,6 @@ public class GameState {
         unlockedAchievements.clear();
         unlockedAchievements.addAll(unlocked);
     }
-
-    // ─────────────────────────────────────────────────────────────────────────
 
     public int      getClockMinute()               { return clockMinute; }
     public void     setClockMinute(int m)          { clockMinute = m; }

@@ -7,8 +7,7 @@ public enum Weather {
     STORM   (1.2, "Stormy",   "Waves churn and the depths stir. Something big is moving."),
     FOG     (1.0, "Foggy",    "Thick mist hugs the water. Strange things lurk below.");
 
-    /** Multiplier applied to the overall chance of catching anything this cast. */
-    public final double catchRateModifier;
+    public final double catchRateModifier; // catch chance multiplier per cast
     public final String displayName;
     public final String flavor;
 

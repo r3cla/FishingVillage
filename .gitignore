@@ -14,5 +14,7 @@ bin/
 .claude/settings.local.json
 settings.local.json
 
+details.md
+
 # Player save (don't commit personal game progress)
 desktop/assets/save.json

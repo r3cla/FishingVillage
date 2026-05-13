@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 public class Fonts {
 
-    // Built from integer code points - immune to source-file encoding issues.
+    // code points avoid source-file encoding issues
     private static final String EXTRA_CHARS = buildExtraChars();
 
     private static String buildExtraChars() {
@@ -29,7 +29,6 @@ public class Fonts {
         return sb.toString();
     }
 
-    /** 15px body text / table rows - drop-in for the default BitmapFont. */
     public static BitmapFont ui;
 
     public static void load() {
