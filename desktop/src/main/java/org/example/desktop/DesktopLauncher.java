@@ -10,6 +10,7 @@ public class DesktopLauncher {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("Fishing Village");
         config.setWindowedMode(1280, 720);
+        config.setMaximized(true);
         config.setForegroundFPS(60);
         config.useVsync(true);
         config.setWindowIcon("sprites/Fish/debugFesh.png");

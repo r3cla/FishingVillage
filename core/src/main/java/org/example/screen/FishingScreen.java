@@ -46,12 +46,10 @@ public class FishingScreen extends ScreenAdapter {
     private static final float H       = 720f;
     private static final float hz = 320f;
 
-    // ── Fisher geometry ───────────────────────────────────────────────────────
     private static final float FISHER_X  = 630f;
     private static final float ROD_SCALE = 1.7f;
 
-    // arm position (hand that grips the rod)
-    // tune ARM_Y_STANDING / ARM_Y_SITTING independently to align the rod sprite
+    // tune ARM_Y_STANDING / ARM_Y_SITTING independently to align rod sprite
     private static final float ARM_X_OFFSET   =  65f;
     private static final float ARM_Y_STANDING = 135f;
     private static final float ARM_Y_SITTING  = 145f;
@@ -67,20 +65,17 @@ public class FishingScreen extends ScreenAdapter {
     private float rodTipY() { return armY() +  57f * ROD_SCALE; }  // armY + 114
     private float idleLineY() { return hz - 55f; }
 
-    // ── Fishing timing ────────────────────────────────────────────────────────
     private static final float GAME_MINUTES_PER_SECOND = 3f;
     private static final float WEATHER_CHANGE_INTERVAL = 120f;
     private static final float CAST_DURATION           = 0.5f;
     private static final float REEL_DURATION           = 0.4f;
     private static final float BITING_WINDOW           = 2.5f;
 
-    // ── Water palette  [DAY, NIGHT] ──────────────────────────────────────────
     private static final Color[] WATER_PAL = {
         new Color(0.16f, 0.46f, 0.72f, 1f),
         new Color(0.03f, 0.05f, 0.16f, 1f),
     };
 
-    // ── Rarity colors ─────────────────────────────────────────────────────────
     private static final Map<Rarity, Color> RARITY_COL = Map.of(
         Rarity.COMMON,    new Color(0.75f, 0.75f, 0.75f, 1f),
         Rarity.UNCOMMON,  new Color(0.30f, 0.85f, 0.30f, 1f),
@@ -89,12 +84,10 @@ public class FishingScreen extends ScreenAdapter {
         Rarity.LEGENDARY, new Color(1.00f, 0.82f, 0.10f, 1f)
     );
 
-    // ── HUD colors ────────────────────────────────────────────────────────────
     private static final Color BITE_COLOR = new Color(1.00f, 0.90f, 0.10f, 1f);
     private static final Color COIN_GOLD  = new Color(1.00f, 0.82f, 0.15f, 1f);
     private static final Color COIN_DARK  = new Color(0.75f, 0.58f, 0.05f, 1f);
 
-    // ── Scene colors ──────────────────────────────────────────────────────────
     private static final Color PLANK      = new Color(0.42f, 0.28f, 0.15f, 1f);
     private static final Color PLANK_TOP  = new Color(0.55f, 0.40f, 0.22f, 1f);
     private static final Color PLANK_LINE = new Color(0.33f, 0.20f, 0.09f, 1f);
@@ -103,16 +96,13 @@ public class FishingScreen extends ScreenAdapter {
     private static final Color LINE_COL = new Color(0.80f, 0.80f, 0.80f, 1f);
 
 
-    // ── Game reference ────────────────────────────────────────────────────────
     private final FishingVillageGame game;
 
-    // ── LibGDX ────────────────────────────────────────────────────────────────
     private OrthographicCamera camera;
     private ShapeRenderer      shapes;
     private SpriteBatch        batch;
     private BitmapFont         font;
 
-    // ── Game systems ──────────────────────────────────────────────────────────
     private GameClock     clock;
     private WeatherSystem weatherSystem;
     private Random        rng;
@@ -120,12 +110,10 @@ public class FishingScreen extends ScreenAdapter {
     private float clockAccum   = 0f;
     private float weatherTimer = 0f;
 
-    // ── Water ambience ────────────────────────────────────────────────────────
     private Sound[] waterSounds;
     private float   ambienceTimer    = 0f;
     private float   nextAmbienceTime = 0f;
 
-    // ── Sound effects ─────────────────────────────────────────────────────────
     private Sound castSound;
     private Sound lureBobSound;
     private Sound fishBiteSound;
@@ -134,13 +122,11 @@ public class FishingScreen extends ScreenAdapter {
     private Sound junkSound;
     private Sound shinyCaughtSound;
 
-    // ── Wave animation ────────────────────────────────────────────────────────
     private float waveTime           = 0f;
     private float waveEventTimer     = 0f;
     private float nextWaveEvent      = 0f;
     private float waveEventIntensity = 0f;
 
-    // ── Water shimmer ─────────────────────────────────────────────────────────
     private static final int   SHIMMER_COUNT = 35;
     private final float[] shimmerX    = new float[SHIMMER_COUNT];
     private final float[] shimmerY    = new float[SHIMMER_COUNT];
@@ -148,7 +134,6 @@ public class FishingScreen extends ScreenAdapter {
     private final float[] shimmerLife = new float[SHIMMER_COUNT];
     private float shimmerTime = 0f;
 
-    // ── Splash effect ─────────────────────────────────────────────────────────
     private static final int   SPLASH_COUNT    = 12;
     private static final float SPLASH_DURATION = 0.65f;
     private static final float SPLASH_GRAVITY  = -300f;
@@ -159,21 +144,18 @@ public class FishingScreen extends ScreenAdapter {
     private float splashTimer   = -1f;
     private float splashCentreX, splashCentreY;
 
-    // ── Weather particles ─────────────────────────────────────────────────────
     private float fogTime = 0f;
     private static final int RAIN_COUNT = 200;
     private final float[] rainX = new float[RAIN_COUNT];
     private final float[] rainY = new float[RAIN_COUNT];
 
-    // ── Scratch colors ────────────────────────────────────────────────────────
     private final Color currentWater = new Color();
 
-    // ── Fishing state machine ─────────────────────────────────────────────────
     private FishingState fishingState = FishingState.IDLE;
     private float        stateTimer  = 0f;
     private float        waitTime    = 0f;
 
-    private float bobberX = FISHER_X + 315f; // approx rod tip X at startup
+    private float bobberX = FISHER_X + 315f;
     private float bobberY = hz - 55f;
     private float targetX, targetY;
 
@@ -189,18 +171,16 @@ public class FishingScreen extends ScreenAdapter {
     private static final int BAG_VISIBLE = 10;
 
     private boolean journalOpen        = false;
-    private int     journalTab         = 0; // 0 = Encyclopedia, 1 = Achievements
+    private int     journalTab         = 0;
     private int     journalScrollOffset = 0;
     private static final int JOURNAL_VISIBLE = 12;
 
-    // ── Background layers ─────────────────────────────────────────────────────
     private Texture[] bgDayClear;
     private Texture[] bgDayOvercast;
     private Texture[] bgDayRain;
     private Texture[] bgNight;
     private Texture[] bgNightOvercast;
 
-    // ── Sprite assets ─────────────────────────────────────────────────────────
     private Texture   texMerchant;
     private Texture   texFisherStanding;
     private Texture   texFisherSitting;
@@ -211,9 +191,8 @@ public class FishingScreen extends ScreenAdapter {
     private Map<JunkType, Texture> junkTextures;
     private float bobberAnimTimer = 0f;
 
-    // ── Dev tools ─────────────────────────────────────────────────────────────
     private boolean devWindowOpen    = false;
-    private int     devSection       = 0; // 0 = time, 1 = weather, 2 = money
+    private int     devSection       = 0;
     private int     devTimeCursor    = 0;
     private int     devWeatherCursor = 0;
     private int     devMoneyCursor   = 0;
@@ -224,21 +203,16 @@ public class FishingScreen extends ScreenAdapter {
     private int   devSeqStep  = 0;
     private float devSeqTimer = 0f;
 
-    // ── Minigame state ────────────────────────────────────────────────────────
-    private float mgHookPos       = 0.5f;
     private float mgZonePos       = 0.5f;
     private float mgZoneDir       = 1f;
-    private float mgHookSpeed     = 0f;
     private float mgZoneSpeed     = 0f;
     private float mgZoneHalfWidth = 0.12f;
     private float mgBarWidth      = 500f;
-    private float mgCatchProgress = 0f;
-    private float mgFillRate      = 0f;
-    private float mgDrainRate     = 0f;
-    private float mgTimeLimit     = 15f;
+    private float mgTimeLimit     = 30f;
     private float mgTimeElapsed   = 0f;
+    private int   mgAttempts      = 0; // -1 = unlimited
+    private float mgMissFlash     = 0f;
 
-    // ── Lightning ─────────────────────────────────────────────────────────────
     private float   lightningTimer = 4f;
     private float   lightningFlash = 0f;
     private float[] boltX          = new float[10];
@@ -246,13 +220,10 @@ public class FishingScreen extends ScreenAdapter {
     private int     boltPoints     = 0;
     private static final float LIGHTNING_FADE = 0.25f;
 
-    // ── Sky transition ────────────────────────────────────────────────────────
     private Texture[] bgCurLayers   = null;
     private Texture[] bgFromLayers  = null;
     private float     skyTransition = 1f;
     private static final float SKY_FADE_DURATION = 5f;
-
-    // ─────────────────────────────────────────────────────────────────────────
 
     public FishingScreen(FishingVillageGame game) {
         this.game = game;
@@ -395,7 +366,6 @@ public class FishingScreen extends ScreenAdapter {
         return t;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
     @Override
     public void render(float delta) {
         clockAccum += delta * GAME_MINUTES_PER_SECOND;
@@ -458,6 +428,8 @@ public class FishingScreen extends ScreenAdapter {
         batch.draw(texMerchant, 155f - mw * 0.5f, hz, mw, mh);
         batch.end();
 
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         shapes.begin(ShapeRenderer.ShapeType.Filled);
 
         drawWharfStall(time == TimeOfDay.NIGHT);
@@ -487,13 +459,10 @@ public class FishingScreen extends ScreenAdapter {
 
     }
 
-    // ── Fishing state machine ─────────────────────────────────────────────────
-
     private void updateFishing(float delta) {
         boolean space = Gdx.input.isKeyJustPressed(Input.Keys.SPACE);
         boolean tab   = Gdx.input.isKeyJustPressed(Input.Keys.TAB);
 
-        // DEV cheat sequence: D -> E -> V within 3 seconds
         if (fishingState != FishingState.MINIGAME && fishingState != FishingState.SHOW_RESULT) {
             if (devSeqStep > 0) devSeqTimer -= delta;
             if (devSeqTimer <= 0f) devSeqStep = 0;
@@ -514,7 +483,7 @@ public class FishingScreen extends ScreenAdapter {
                     }
                 }
             } else if (devSeqStep > 0 && anyKeyJustPressed()) {
-                devSeqStep = 0; // wrong key resets sequence
+                devSeqStep = 0;
             }
         }
 
@@ -664,29 +633,38 @@ public class FishingScreen extends ScreenAdapter {
                 break;
 
             case MINIGAME:
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT))  mgHookPos -= mgHookSpeed * delta;
-                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) mgHookPos += mgHookSpeed * delta;
-                mgHookPos = MathUtils.clamp(mgHookPos, 0f, 1f);
                 mgZonePos += mgZoneDir * mgZoneSpeed * delta;
                 if (mgZonePos >= 1f - mgZoneHalfWidth) { mgZonePos = 1f - mgZoneHalfWidth; mgZoneDir = -1f; }
                 if (mgZonePos <= mgZoneHalfWidth)       { mgZonePos = mgZoneHalfWidth;       mgZoneDir =  1f; }
-                if (Math.abs(mgHookPos - mgZonePos) <= mgZoneHalfWidth) {
-                    mgCatchProgress = Math.min(1f, mgCatchProgress + mgFillRate * delta);
-                } else {
-                    mgCatchProgress = Math.max(0f, mgCatchProgress - mgDrainRate * delta);
-                }
+                if (mgMissFlash > 0f) mgMissFlash -= delta;
                 mgTimeElapsed += delta;
-                if (mgCatchProgress >= 1f) {
-                    commitCatch();
-                    bubblesSound.play(0.35f);
-                    stateTimer   = 0f;
-                    fishingState = FishingState.REELING;
-                } else if (mgTimeElapsed >= mgTimeLimit) {
+                if (mgTimeElapsed >= mgTimeLimit) {
                     lastWasMiss  = true;
-                    missMessage  = "The fish slipped the hook!";
+                    missMessage  = "The fish got away!";
                     caughtFish   = null;
                     stateTimer   = 0f;
                     fishingState = FishingState.SHOW_RESULT;
+                    break;
+                }
+                if (space) {
+                    if (Math.abs(0.5f - mgZonePos) <= mgZoneHalfWidth) {
+                        commitCatch();
+                        bubblesSound.play(0.35f);
+                        stateTimer   = 0f;
+                        fishingState = FishingState.REELING;
+                    } else {
+                        mgMissFlash = 0.5f;
+                        if (mgAttempts > 0) {
+                            mgAttempts--;
+                            if (mgAttempts == 0) {
+                                lastWasMiss  = true;
+                                missMessage  = "The fish slipped the hook!";
+                                caughtFish   = null;
+                                stateTimer   = 0f;
+                                fishingState = FishingState.SHOW_RESULT;
+                            }
+                        }
+                    }
                 }
                 break;
 
@@ -719,7 +697,7 @@ public class FishingScreen extends ScreenAdapter {
         targetX      = 750f + rng.nextFloat() * 430f;  // 750-1180, right of dock (ends ~x710)
         targetY      =  20f + rng.nextFloat() * 220f;  // 20-240, full visible water area
         stateTimer   = 0f;
-        fishingState = FishingState.CASTING; // set before rodTipX/Y so armY() uses sitting values
+        fishingState = FishingState.CASTING; // must be set before rodTipX/Y so armY() uses sitting values
         bobberX      = rodTipX();
         bobberY      = rodTipY();
         castSound.play(0.40f);
@@ -765,24 +743,20 @@ public class FishingScreen extends ScreenAdapter {
     }
 
     private void startMinigame(Rarity rarity) {
-        mgHookPos       = 0.5f;
-        mgCatchProgress = 0f;
-        mgTimeElapsed   = 0f;
-        mgZoneDir       = rng.nextBoolean() ? 1f : -1f;
+        mgTimeElapsed = 0f;
+        mgTimeLimit   = 30f;
+        mgMissFlash   = 0f;
+        mgZoneDir     = rng.nextBoolean() ? 1f : -1f;
         switch (rarity) {
-            case COMMON    -> { mgBarWidth = 260f; mgHookSpeed = 0.60f; mgZoneSpeed = 0.07f; mgZoneHalfWidth = 0.14f; mgFillRate = 0.50f; mgDrainRate = 0.20f; mgTimeLimit = 20f; }
-            case UNCOMMON  -> { mgBarWidth = 350f; mgHookSpeed = 0.50f; mgZoneSpeed = 0.12f; mgZoneHalfWidth = 0.09f; mgFillRate = 0.40f; mgDrainRate = 0.40f; mgTimeLimit = 16f; }
-            case RARE      -> { mgBarWidth = 500f; mgHookSpeed = 0.42f; mgZoneSpeed = 0.22f; mgZoneHalfWidth = 0.06f; mgFillRate = 0.32f; mgDrainRate = 0.60f; mgTimeLimit = 13f; }
-            case EPIC      -> { mgBarWidth = 500f; mgHookSpeed = 0.32f; mgZoneSpeed = 0.35f; mgZoneHalfWidth = 0.04f; mgFillRate = 0.25f; mgDrainRate = 0.80f; mgTimeLimit = 11f; }
-            case LEGENDARY -> { mgBarWidth = 500f; mgHookSpeed = 0.22f; mgZoneSpeed = 0.50f; mgZoneHalfWidth = 0.03f; mgFillRate = 0.18f; mgDrainRate = 1.00f; mgTimeLimit = 10f; }
+            case COMMON    -> { mgBarWidth = 340f; mgZoneSpeed = 0.13f; mgZoneHalfWidth = 0.16f; mgAttempts = -1; }
+            case UNCOMMON  -> { mgBarWidth = 340f; mgZoneSpeed = 0.22f; mgZoneHalfWidth = 0.12f; mgAttempts =  4; }
+            case RARE      -> { mgBarWidth = 460f; mgZoneSpeed = 0.33f; mgZoneHalfWidth = 0.08f; mgAttempts =  3; }
+            case EPIC      -> { mgBarWidth = 460f; mgZoneSpeed = 0.50f; mgZoneHalfWidth = 0.05f; mgAttempts =  2; }
+            case LEGENDARY -> { mgBarWidth = 460f; mgZoneSpeed = 0.70f; mgZoneHalfWidth = 0.03f; mgAttempts =  1; }
         }
-        // storm makes rare+ harder: slower hook, faster zone, faster drain
         if (weatherSystem.getCurrent() == Weather.STORM && rarity.ordinal() >= Rarity.RARE.ordinal()) {
-            mgHookSpeed *= 0.80f;
             mgZoneSpeed *= 1.35f;
-            mgDrainRate *= 1.25f;
         }
-        // Start zone on left or right side, never near centre
         float lo   = mgZoneHalfWidth;
         float hi   = 1f - mgZoneHalfWidth;
         float dead = 0.10f;
@@ -791,8 +765,6 @@ public class FishingScreen extends ScreenAdapter {
             : (0.5f + dead) + rng.nextFloat() * Math.max(0f, hi - 0.5f - dead);
         fishingState = FishingState.MINIGAME;
     }
-
-    // ── Scene drawing ─────────────────────────────────────────────────────────
 
     private static final float CLOUD_OFFSET = 60f;
 
@@ -830,7 +802,6 @@ public class FishingScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        // Draw previous background underneath (only during transition)
         if (skyTransition < 1f && bgFromLayers != null) {
             batch.setColor(1f, 1f, 1f, 1f);
             batch.draw(bgFromLayers[0], 0, 0, W, H);
@@ -841,7 +812,6 @@ public class FishingScreen extends ScreenAdapter {
             }
         }
 
-        // Draw current background fading in on top
         batch.setColor(1f, 1f, 1f, skyTransition);
         batch.draw(bgCurLayers[0], 0, 0, W, H);
         for (int i = 1; i < bgCurLayers.length; i++) {
@@ -866,13 +836,12 @@ public class FishingScreen extends ScreenAdapter {
         Color cBarrel = isNight ? new Color(0.18f, 0.12f, 0.06f, 1f) : new Color(0.45f, 0.30f, 0.12f, 1f);
         Color cHoop   = isNight ? new Color(0.12f, 0.08f, 0.04f, 1f) : new Color(0.28f, 0.18f, 0.08f, 1f);
 
-        float sx = 35f;    // stall left x
-        float sy = hz;     // base (top of dock surface)
-        float sw = 240f;   // counter width
-        float ch = 55f;    // counter body height
-        float ct = 10f;    // counter top highlight height
+        float sx = 35f;
+        float sy = hz;
+        float sw = 240f;
+        float ch = 55f;
+        float ct = 10f;
 
-        // Counter body and top
         shapes.setColor(cBody);
         shapes.rect(sx, sy, sw, ch);
         shapes.setColor(cTop);
@@ -880,13 +849,11 @@ public class FishingScreen extends ScreenAdapter {
         shapes.setColor(cSide);
         shapes.rect(sx + sw, sy, 10f, ch + ct);
 
-        // Awning posts
         float postBase = sy + ch + ct;
         shapes.setColor(cPost);
         shapes.rect(sx + 8f,        postBase, 8f, 140f);
         shapes.rect(sx + sw - 16f,  postBase, 8f, 140f);
 
-        // Striped canopy
         float cx = sx - 28f;
         float cw = sw + 56f;
         float cy = postBase + 140f;
@@ -895,11 +862,9 @@ public class FishingScreen extends ScreenAdapter {
             shapes.setColor((i % 2 == 0) ? cAwn1 : cAwn2);
             shapes.rect(cx + i * stripeW, cy, stripeW, 28f);
         }
-        // Canopy front valance
         shapes.setColor(cDrop);
         shapes.rect(cx, cy - 16f, cw, 16f);
 
-        // Barrel on counter (left side)
         shapes.setColor(cBarrel);
         shapes.rect(sx + 24f, postBase, 44f, 52f);
         shapes.setColor(cHoop);
@@ -907,7 +872,6 @@ public class FishingScreen extends ScreenAdapter {
         shapes.rect(sx + 24f, postBase + 22f, 44f, 4f);
         shapes.rect(sx + 24f, postBase + 38f, 44f, 4f);
 
-        // Crate on counter (right side)
         shapes.setColor(cBody);
         shapes.rect(sx + sw - 72f, postBase, 56f, 40f);
         shapes.setColor(cSide);
@@ -918,37 +882,30 @@ public class FishingScreen extends ScreenAdapter {
     private void drawDock() {
         int[] postX = {100, 270, 460, 640};
 
-        // Vertical posts
         shapes.setColor(POST);
         for (int px : postX) {
             shapes.rect(px - 8f, hz - 240f, 16f, 240f);
         }
 
-        // Horizontal cross-beam tying all posts
         shapes.rect(postX[0] - 4f, hz - 112f, (postX[postX.length - 1] - postX[0]) + 8f, 10f);
 
-        // X-bracing between adjacent post pairs
         shapes.setColor(PLANK_SIDE);
         for (int i = 0; i < postX.length - 1; i++) {
             shapes.rectLine(postX[i],     hz - 240f, postX[i + 1], hz - 112f, 4f);
             shapes.rectLine(postX[i + 1], hz - 240f, postX[i],     hz - 112f, 4f);
         }
 
-        // Deck body
         shapes.setColor(PLANK);
         shapes.rect(0, hz - 22f, 710f, 22f);
 
-        // Plank-line separators across deck surface
         shapes.setColor(PLANK_LINE);
         for (float lx = 35f; lx < 710f; lx += 35f) {
             shapes.rect(lx - 1f, hz - 22f, 2f, 17f);
         }
 
-        // Top surface highlight
         shapes.setColor(PLANK_TOP);
         shapes.rect(0, hz - 6f, 710f, 6f);
 
-        // Right end cap (side face of dock)
         shapes.setColor(PLANK_SIDE);
         shapes.rect(706f, hz - 26f, 6f, 26f);
     }
@@ -961,7 +918,6 @@ public class FishingScreen extends ScreenAdapter {
 
         boolean isStanding = fishingState == FishingState.IDLE || fishingState == FishingState.SHOW_RESULT;
 
-        // Rod sprite — drawn behind fisherman; handle pixel (20,75) aligned to arm position
         Texture rod = rodTexture();
         float rw = rod.getWidth()  * ROD_SCALE;
         float rh = rod.getHeight() * ROD_SCALE;
@@ -969,14 +925,12 @@ public class FishingScreen extends ScreenAdapter {
         float rodSY = armY() - 24f * ROD_SCALE; // 24 = 99 - 75 (rows from bottom to handle)
         batch.draw(rod, rodSX, rodSY, rw, rh);
 
-        // Fisherman sprite — feet at dock surface (hz)
         Texture fisher = isStanding ? texFisherStanding : texFisherSitting;
         float fw = fisher.getWidth()  * 4f;
         float fh = fisher.getHeight() * 4f;
         float spriteY = isStanding ? hz - 92f : hz - 108f;
         batch.draw(fisher, FISHER_X - fw * 0.1f, spriteY, fw, fh);
 
-        // Bobber (animated)
         if (fishingState == FishingState.CASTING  || fishingState == FishingState.WAITING
          || fishingState == FishingState.BITING   || fishingState == FishingState.REELING) {
             float visY = bobberY;
@@ -1014,11 +968,7 @@ public class FishingScreen extends ScreenAdapter {
 
         shapes.setColor(LINE_COL);
         shapes.rectLine(rodTipX(), rodTipY(), bobberX, visY, 1.5f);
-
-        // bobber sprite drawn in drawSprites()
     }
-
-    // ── HUD ───────────────────────────────────────────────────────────────────
 
     private void drawHUD(TimeOfDay time, Weather weather) {
         String prompt = getPromptText();
@@ -1127,8 +1077,6 @@ public class FishingScreen extends ScreenAdapter {
         return text.length() * 7.5f * scale / 2f;
     }
 
-    // ── Weather icon ──────────────────────────────────────────────────────────
-
     private void drawWeatherIcon(Weather weather, float cx, float cy) {
         switch (weather) {
             case CLEAR -> {
@@ -1178,8 +1126,6 @@ public class FishingScreen extends ScreenAdapter {
         }
     }
 
-
-    // ── Result panel ──────────────────────────────────────────────────────────
 
     private void drawResultPanel() {
         float pw = 580f;
@@ -1290,20 +1236,20 @@ public class FishingScreen extends ScreenAdapter {
         batch.end();
     }
 
-    // ── Minigame panel ────────────────────────────────────────────────────────
-
     private void drawMinigame() {
         final float BAR_W = mgBarWidth;
         final float BAR_H = 36f;
         final float BAR_X = (W - BAR_W) / 2f;
         final float BAR_Y = H / 2f - 18f;
         final float PNL_W = 560f;
-        final float PNL_H = 220f;
+        final float PNL_H = 200f;
         final float PNL_X = (W - PNL_W) / 2f;
-        final float PNL_Y = H / 2f - 110f;
+        final float PNL_Y = H / 2f - 100f;
 
         Color rc = RARITY_COL.getOrDefault(
             caughtFish != null ? caughtFish.rarity() : Rarity.RARE, Color.WHITE);
+
+        boolean hookOnFish = Math.abs(0.5f - mgZonePos) <= mgZoneHalfWidth;
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -1313,41 +1259,37 @@ public class FishingScreen extends ScreenAdapter {
         shapes.setColor(0f, 0f, 0f, 0.68f);
         shapes.rect(0, 0, W, H);
 
+        if (mgMissFlash > 0f) {
+            shapes.setColor(0.9f, 0.15f, 0.1f, mgMissFlash * 0.35f);
+            shapes.rect(0, 0, W, H);
+        }
+
         shapes.setColor(0.06f, 0.07f, 0.13f, 1f);
         shapes.rect(PNL_X, PNL_Y, PNL_W, PNL_H);
 
-        // Bar background
         shapes.setColor(0.14f, 0.15f, 0.20f, 1f);
         shapes.rect(BAR_X, BAR_Y, BAR_W, BAR_H);
 
-        // Fish zone
         float zoneX = BAR_X + (mgZonePos - mgZoneHalfWidth) * BAR_W;
         float zoneW = mgZoneHalfWidth * 2f * BAR_W;
         shapes.setColor(rc.r, rc.g, rc.b, 0.50f);
         shapes.rect(zoneX, BAR_Y, zoneW, BAR_H);
 
-        // Hook line
-        float hookX = BAR_X + mgHookPos * BAR_W;
-        boolean hookOnFish = Math.abs(mgHookPos - mgZonePos) <= mgZoneHalfWidth;
+        float hookX = BAR_X + 0.5f * BAR_W;
         shapes.setColor(hookOnFish ? Color.GREEN : Color.WHITE);
         shapes.rectLine(hookX, BAR_Y, hookX, BAR_Y + BAR_H + 18f, 2.5f);
-
-        // Hook triangle (pointing down onto bar)
         shapes.triangle(
             hookX,      BAR_Y + BAR_H + 28f,
             hookX - 9f, BAR_Y + BAR_H + 44f,
             hookX + 9f, BAR_Y + BAR_H + 44f
         );
 
-        // Catch progress bar
-        final float PROG_W = PNL_W - 60f;
-        final float PROG_H = 16f;
-        final float PROG_X = PNL_X + 30f;
-        final float PROG_Y = PNL_Y + 46f;
-        shapes.setColor(0.12f, 0.14f, 0.18f, 1f);
-        shapes.rect(PROG_X, PROG_Y, PROG_W, PROG_H);
-        shapes.setColor(0.20f, 0.82f, 0.32f, 1f);
-        shapes.rect(PROG_X, PROG_Y, PROG_W * mgCatchProgress, PROG_H);
+        if (mgAttempts > 0) {
+            for (int i = 0; i < mgAttempts; i++) {
+                shapes.setColor(rc.r, rc.g, rc.b, 1f);
+                shapes.circle(PNL_X + 30f + i * 16f, PNL_Y + 52f, 5f, 12);
+            }
+        }
 
         shapes.end();
 
@@ -1371,21 +1313,22 @@ public class FishingScreen extends ScreenAdapter {
         font.getData().setScale(1f);
 
         font.setColor(Color.WHITE);
-        font.draw(batch, "Move the hook onto the fish!", PNL_X + 30f, PNL_Y + PNL_H - 46f);
+        font.draw(batch, "Wait for the fish to swim over the hook!", PNL_X + 30f, PNL_Y + PNL_H - 46f);
 
-        font.setColor(0.52f, 0.52f, 0.58f, 1f);
-        font.draw(batch, "Catch progress", PNL_X + 30f, PNL_Y + 74f);
         float timeLeft = Math.max(0f, mgTimeLimit - mgTimeElapsed);
-        font.setColor(timeLeft < 4f ? new Color(1f, 0.35f, 0.25f, 1f) : new Color(0.52f, 0.52f, 0.58f, 1f));
-        font.draw(batch, String.format("%.1fs", timeLeft), PNL_X + PNL_W - 80f, PNL_Y + 74f);
+        font.setColor(timeLeft < 8f ? new Color(1f, 0.35f, 0.25f, 1f) : new Color(0.52f, 0.52f, 0.58f, 1f));
+        font.draw(batch, String.format("%.1fs", timeLeft), PNL_X + PNL_W - 80f, PNL_Y + 62f);
+
+        if (mgAttempts < 0) {
+            font.setColor(0.52f, 0.52f, 0.58f, 1f);
+            font.draw(batch, "Unlimited", PNL_X + 30f, PNL_Y + 62f);
+        }
 
         font.setColor(0.50f, 0.50f, 0.55f, 1f);
-        font.draw(batch, "[←→]  Move hook — keep it on the fish!", PNL_X + 30f, PNL_Y + 22f);
+        font.draw(batch, "[SPACE]  Strike when the fish is on the hook!", PNL_X + 30f, PNL_Y + 22f);
         font.setColor(Color.WHITE);
         batch.end();
     }
-
-    // ── Journal panel ─────────────────────────────────────────────────────────
 
     private void drawJournalPanel() {
         final float PW = 760f, PH = 560f;
@@ -1419,7 +1362,6 @@ public class FishingScreen extends ScreenAdapter {
         font.draw(batch, "Journal", PX + 20f, PY + PH - 14f);
         font.getData().setScale(1f);
 
-        // Tabs
         font.setColor(journalTab == 0 ? Color.WHITE : new Color(0.45f, 0.45f, 0.52f, 1f));
         font.draw(batch, "[←] Encyclopedia", PX + 220f, PY + PH - 26f);
         font.setColor(journalTab == 1 ? Color.WHITE : new Color(0.45f, 0.45f, 0.52f, 1f));
@@ -1520,8 +1462,6 @@ public class FishingScreen extends ScreenAdapter {
         }
     }
 
-    // ── Bag panel ─────────────────────────────────────────────────────────────
-
     private void drawBagPanel() {
         float pw = 520f, ph = 500f;
         float px = (W - pw) / 2f, py = (H - ph) / 2f;
@@ -1598,8 +1538,6 @@ public class FishingScreen extends ScreenAdapter {
         batch.end();
     }
 
-    // ── Dev options window ────────────────────────────────────────────────────
-
     private void drawDevWindow() {
         float pw = 760f, ph = 360f;
         float px = (W - pw) / 2f, py = (H - ph) / 2f;
@@ -1644,7 +1582,6 @@ public class FishingScreen extends ScreenAdapter {
         float rowTop = py + ph - 58f;
         float rowH   = 34f;
 
-        // --- Time of Day column ---
         Color hdrCol = devSection == 0 ? COIN_GOLD : new Color(0.55f, 0.55f, 0.55f, 1f);
         font.setColor(hdrCol);
         font.draw(batch, "Time of Day", colL, rowTop);
@@ -1656,7 +1593,6 @@ public class FishingScreen extends ScreenAdapter {
             font.draw(batch, (active ? "> " : "  ") + periods[i].displayName, colL, ry);
         }
 
-        // --- Weather column ---
         Color hdrColW = devSection == 1 ? COIN_GOLD : new Color(0.55f, 0.55f, 0.55f, 1f);
         font.setColor(hdrColW);
         font.draw(batch, "Weather", colM, rowTop);
@@ -1668,7 +1604,6 @@ public class FishingScreen extends ScreenAdapter {
             font.draw(batch, (active ? "> " : "  ") + weathers[i].displayName, colM, ry);
         }
 
-        // --- Money column ---
         Color hdrColM = devSection == 2 ? COIN_GOLD : new Color(0.55f, 0.55f, 0.55f, 1f);
         font.setColor(hdrColM);
         font.draw(batch, "Give Money", colR, rowTop);
@@ -1685,8 +1620,6 @@ public class FishingScreen extends ScreenAdapter {
         font.setColor(Color.WHITE);
         batch.end();
     }
-
-    // ── Wave animation ────────────────────────────────────────────────────────
 
     private void updateWaves(float delta) {
         waveTime      += delta;
@@ -1722,8 +1655,6 @@ public class FishingScreen extends ScreenAdapter {
         }
     }
 
-    // ── Water shimmer ─────────────────────────────────────────────────────────
-
     private void updateShimmer(float delta) {
         shimmerTime += delta;
         for (int i = 0; i < SHIMMER_COUNT; i++) {
@@ -1740,7 +1671,6 @@ public class FishingScreen extends ScreenAdapter {
     private void drawWaterShimmer() {
         float wr = currentWater.r, wg = currentWater.g, wb = currentWater.b;
 
-        // Sparkle specks: small bright dots that fade in then out
         for (int i = 0; i < SHIMMER_COUNT; i++) {
             float t     = shimmerAge[i] / shimmerLife[i];
             float alpha = (t < 0.25f ? t / 0.25f : (1f - t) / 0.75f) * 0.30f;
@@ -1752,7 +1682,6 @@ public class FishingScreen extends ScreenAdapter {
             shapes.rect(shimmerX[i], shimmerY[i], 3f, 2f);
         }
 
-        // Caustic drift bands: thin horizontal streaks that oscillate slowly
         for (int i = 0; i < 7; i++) {
             float y = 55f  + i * 35f + MathUtils.sin(shimmerTime * 0.25f + i * 1.7f) * 8f;
             float x = 960f + MathUtils.sin(shimmerTime * 0.18f + i * 1.5f) * 220f;
@@ -1766,8 +1695,6 @@ public class FishingScreen extends ScreenAdapter {
             shapes.rect(x, y, w, 2f);
         }
     }
-
-    // ── Splash effect ─────────────────────────────────────────────────────────
 
     private void triggerSplash(float x, float y) {
         splashCentreX = x;
@@ -1798,7 +1725,6 @@ public class FishingScreen extends ScreenAdapter {
         float t  = splashTimer / SPLASH_DURATION;
         float wr = currentWater.r, wg = currentWater.g, wb = currentWater.b;
 
-        // Expanding ring ripple at water surface
         float ringR     = splashTimer * 55f;
         float ringAlpha = (1f - t) * 0.55f;
         shapes.setColor(Math.min(1f, wr + 0.45f), Math.min(1f, wg + 0.40f), Math.min(1f, wb + 0.30f), ringAlpha);
@@ -1808,15 +1734,12 @@ public class FishingScreen extends ScreenAdapter {
                         splashCentreY + MathUtils.sin(a) * ringR - 1.5f, 3f, 3f);
         }
 
-        // Droplet particles arcing up then falling
         float dropAlpha = (1f - t) * 0.90f;
         shapes.setColor(Math.min(1f, wr + 0.52f), Math.min(1f, wg + 0.46f), Math.min(1f, wb + 0.36f), dropAlpha);
         for (int i = 0; i < SPLASH_COUNT; i++) {
             shapes.rect(splashX[i] - 1.5f, splashY[i] - 1.5f, 3f, 3f);
         }
     }
-
-    // ── Weather effects ───────────────────────────────────────────────────────
 
     private void updateWeather(Weather weather, float delta) {
         fogTime += delta;
@@ -1885,11 +1808,9 @@ public class FishingScreen extends ScreenAdapter {
     }
 
     private void drawFog(float baseAlpha) {
-        // Full-sky haze
         shapes.setColor(0.78f, 0.82f, 0.86f, baseAlpha * 0.7f);
         shapes.rect(0, hz, W, H - hz);
 
-        // Drifting bands near the waterline
         float[] yOff    = { -30f,  25f,  70f, 120f, -80f };
         float[] alphas  = { 0.22f, 0.18f, 0.14f, 0.10f, 0.16f };
         float[] speeds  = {  14f,  -9f,  18f,   -6f,  11f };
@@ -1903,8 +1824,6 @@ public class FishingScreen extends ScreenAdapter {
         }
     }
 
-    // ── Water ambience ────────────────────────────────────────────────────────
-
     private void updateAmbience(float delta) {
         ambienceTimer += delta;
         if (ambienceTimer >= nextAmbienceTime) {
@@ -1913,8 +1832,6 @@ public class FishingScreen extends ScreenAdapter {
             nextAmbienceTime = 12f + rng.nextFloat() * 18f;
         }
     }
-
-    // ── Color helpers ─────────────────────────────────────────────────────────
 
     private void lerpPalette(Color[] palette, TimeOfDay time, Color dest) {
         int   cur  = time.ordinal();
